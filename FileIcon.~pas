@@ -1,0 +1,30 @@
+unit FileIcon;
+
+interface
+
+uses ShellApi;
+
+type
+  TICONDIRENTRY = packed record
+    bWidth: Byte;          // Width, in pixels, of the image
+    bHeight: Byte;         // Height, in pixels, of the image
+    bColorCount: Byte;     // Number of colors in image (0 if >=8bpp)
+    bReserved: Byte;       // Reserved ( must be 0)
+    wPlanes: Word;         // Color Planes
+    wBitCount: Word;       // Bits per pixel
+    dwBytesInRes: DWORD;   // How many bytes in this resource?
+    dwImageOffset: DWORD;  // Where in the file is this image?
+  end;
+
+  TICONDIR = packed record
+    idReserved: Word; // Reserved (must be 0)
+    idType: Word;     // Resource Type (1 for icons)
+    idCount: Word;    // How many images?
+    idEntries: array [0..255] of TICONDIRENTRY;
+  end;
+  PICONDIR=^TICONDIR;
+
+
+implementation
+
+end.
