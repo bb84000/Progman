@@ -199,10 +199,9 @@ type
     procedure WndProc(var Msg: TMessage); override;
     function ShowAlert(Title, AlertStr, StReplace, NoShow: String; var Alert: Boolean): Boolean;
     procedure ChkVersion;
-    function StateChanged: Bool;
+    function StateChanged: SaveType;
     function PMnuSaveEnable (Enabled: Boolean):Boolean;
     procedure CropBitmap(InBitmap, OutBitMap : TBitmap; Enabled: Boolean); //X, Y, W, H :Integer);
-
   end;
 
 const
@@ -294,10 +293,8 @@ begin
       reg.CloseKey;
       reg.free;
     end;
-    if StateChanged then
-    begin
-       SaveConfig (GroupName, all);
-    end;
+    SaveConfig (GroupName, StateChanged);
+
     Application.ProcessMessages;
     Msg.Result := 1 ;
   end;
@@ -699,7 +696,7 @@ begin
        then  RenameFile(PrgMgrAppsData+GroupName+'.bk'+IntToStr(i), PrgMgrAppsData+GroupName+'.bk'+IntToStr(i-1));
     end else
     begin
-      SaveConfig(GroupName, State)
+      SaveConfig(GroupName, StateChanged)
     end;
   end;
   LoadCfgFile(ConfigFile);
@@ -831,7 +828,7 @@ begin
 
 end;
 
-function TFPrgMgr.StateChanged : Bool;
+function TFPrgMgr.StateChanged : SaveType;
 var
   WinPos : array [0..10] of Integer;
   i: Integer;
@@ -854,7 +851,7 @@ begin
   WinPos[4]:= Width;
   //WinPos[5]:= PnlWinVer.Width;
   For i:= 0 to 4 do WState:=WState+IntToHex(WinPos[i], 4);
-  result:= ((WState<>PrevWState) or
+  If ((WState<>PrevWState) or
            (GrpIconFile<>PrevGrpIconFile) or
            (GrpIconIndex <> PrevGrpIconIndex) or
            (LastUpdChk<>PrevLastUpdChk) or
@@ -864,8 +861,16 @@ begin
            (FPrefs.ImgChanged) or
            (MiniInTray <> PrevMiniInTray) or
            (HideInTaskBar <> PrevHideInTaskBar) or
-           (HideBars <> PrevHideBars) or
-           ListeChange);
+           (HideBars <> PrevHideBars)) then
+  begin
+    result:= State ;
+  end else
+  If ListeChange then begin
+    result:= all;
+  end else
+  begin
+    result:= none;
+  end;
 end;
 
 
@@ -893,18 +898,12 @@ begin
                        ShortCutName, GrpIconFile, GrpIconIndex);
 
       end;
-      if StateChanged then
-      begin
-         SaveConfig(GroupName, All);
-      end;
+      SaveConfig(GroupName, StateChanged);
     end;
   end else
   begin
-    if StateChanged then
-    begin
-
-      SaveConfig(GroupName, All);
-    end;
+    ListeChange:= False;
+    SaveConfig(GroupName, StateChanged);
   end;
   ImageList.Free;
   ListeFichiers.Free;
@@ -928,6 +927,7 @@ var
   LinkInfo: TShellLinkInfoStruct;
   s, s1: string;
 begin
+  // Initialize file info structure
   ZeroMemory(@SearchRec, SizeOf(TSearchRec));
   FindFirst(FileName, faAnyFile, SearchRec);
   SHGetFileInfo(PChar(FileName), 0, FileInfo, SizeOf(FileInfo), SHGFI_DISPLAYNAME);
@@ -937,23 +937,29 @@ begin
   Result.Description:= FileInfo.szDisplayName;
   Result.Size:= SearchRec.size;
   SHGetFileInfo(PChar(FileName), 0, FileInfo, SizeOf(FileInfo), SHGFI_TYPENAME);
-  Result.TypeName:= FileInfo.szTypeName;
+  Result.TypeName:= 'Application' ;//FileInfo.szTypeName;
   try
     Result.Date:= FileDateToDateTime(FileAge(FileName));
   except
   end;
   Result.IconIndex:= 0;
   s:= FileName;
-  //If WinVersion1.Ver64bit then
-  //begin
-    ZeroMemory(@LinkInfo, SizeOf(LinkInfo));
-    StrPCopy (LinkInfo.FullPathAndNameOfLinkFile, s);
-    GetLinkInfo(@LinkInfo);
-    If StrLen (LinkInfo.Description) > 0 then Result.Description:= LinkInfo.Description ;
-    if StrLen(LinkInfo.FullPathAndNameOfFileContiningIcon) > 0
-    then s1:= LinkInfo.FullPathAndNameOfFileContiningIcon else s1:= LinkInfo.FullPathAndNameOfFileToExecute;
-    if length(s1) > 0 then
-    begin
+  //Initialize shortcut structure
+  ZeroMemory(@LinkInfo, SizeOf(LinkInfo));
+  StrPCopy (LinkInfo.FullPathAndNameOfLinkFile, s);
+  GetLinkInfo(@LinkInfo);
+
+  // Is it a shortcut
+  // We replace shortcut link by real program location
+  if Uppercase(ExtractFileExt(FileName))='.LNK' then
+  begin
+   If StrLen (LinkInfo.Description) > 0 then Result.Description:= LinkInfo.Description ;
+   Result.Name:= ExtractFileName(LinkInfo.FullPathAndNameOfFileToExecute);
+   Result.Path:= ExtractFilepath(LinkInfo.FullPathAndNameOfFileToExecute);
+   if StrLen(LinkInfo.FullPathAndNameOfFileContiningIcon) > 0
+   then s1:= LinkInfo.FullPathAndNameOfFileContiningIcon else s1:= LinkInfo.FullPathAndNameOfFileToExecute;
+   if length(s1) > 0 then
+   begin
       Result.IconIndex:= LinkInfo.IconIndex;
       if FileExists(s1) then s:=  s1 else
       // in case of x64
@@ -967,7 +973,7 @@ begin
       Result.Params:= LinkInfo.ParamStringsOfFileToExecute;
       Result.StartPath:= LinkInfo.FullPathAndNameOfWorkingDirectroy;
     end;
-  //end;
+  end;
   Result.IconFile:= s;
   if ExtractIcon(Handle, PChar(s), Result.IconIndex) = 0 then
   begin
@@ -1639,12 +1645,12 @@ begin
                        ShortCutName, GrpIconFile, GrpIconIndex);
 
     end;
-    if StateChanged then SaveConfig(GroupName, All);
+    SaveConfig(GroupName, StateChanged);
      ListeChange:= False;
      SBSave.Enabled:= False;
      PMnuSave.Enabled:= PMnuSaveEnable(False);
 
-  end;
+  end ;
  
 end;
 
@@ -1731,7 +1737,7 @@ begin
                        ShortCutName, GrpIconFile, GrpIconIndex);
     end;
     TrayProgman.Active:= MiniInTray;
-    If StateChanged then SaveConfig(GroupName, All);
+    SaveConfig(GroupName, StateChanged);
     
   end;
 end;
@@ -1944,7 +1950,7 @@ end;
 
 procedure TFPrgMgr.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
- If StateChanged then SaveConfig(GroupName, All);
+ //SaveConfig(GroupName, StateChanged);
 end;
 
 procedure TFPrgMgr.SBQuitClick(Sender: TObject);

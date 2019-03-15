@@ -94,6 +94,10 @@ Possibilité de masquer la barre d'outils et la barre de statut,(clic droit en de
   des icones de programmes pour masquer ou afficher ces barres)
 Réutilisation des bitmaps des boutons pour les popup menus
 
+Version 0.6.6.9 - 15/03/2019
+Shortcut are replaced by target application in the list
+Correction of Bug in settings save, list was always saved even when abort changes  
+
 
 
  
