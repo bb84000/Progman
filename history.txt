@@ -95,8 +95,12 @@ Possibilité de masquer la barre d'outils et la barre de statut,(clic droit en de
 Réutilisation des bitmaps des boutons pour les popup menus
 
 Version 0.6.6.9 - 15/03/2019
-Shortcut are replaced by target application in the list
-Correction of Bug in settings save, list was always saved even when abort changes  
+Les raccourcis sont rempalcés par les exécutables cibles dans la liste
+Correction d'un bug of Bug empêchant de ne pas sauvegarder les changements de liste
+Correction d'un bug dans la non redirection 64bits/32 bits
+
+Version 0.6.7.0 -16/03/2019
+Restauration de l'icone dans la zone de notification lors d'un redémarrage du shell  
 
 
 

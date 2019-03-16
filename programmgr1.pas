@@ -46,7 +46,7 @@ type
     SBLoadConf: TSpeedButton;
     WinVersion1: TWinVersion;
     SBQuit: TSpeedButton;
-    TrayProgman: TJvTrayIconN;
+    TrayProgman2: TJvTrayIconN;
     TrayMenu: TPopupMenu;
     PTrayMnuRestore: TMenuItem;
     PTrayMnuMinimize: TMenuItem;
@@ -130,13 +130,17 @@ type
     procedure PMnuAboutClick(Sender: TObject);
     procedure PMnuQuitClick(Sender: TObject);
     procedure FormResize(Sender: TObject);
+    procedure PMnuAddFileClick(Sender: TObject);
+    procedure Timer2Timer(Sender: TObject);
+    
   private
     { Déclarations privées }
     FMinWidth, FminHeight : Integer;
+    TrayProgMan: TJvTrayIconN;
     //procedure AppMessage(var Msg: TMsg; var Handled: Boolean);
     FOrgListViewWndProc: TWndMethod;
     procedure ListViewWndProc(var Msg: TMessage);
-
+    procedure CreateTrayIcon;
   public
     { Déclarations publiques }
     YesBtn, NoBtn, CancelBtn: String;
@@ -186,6 +190,7 @@ type
     PrevWindowState: TWindowState;
     AppState, PrevAppState : Integer;
     BarsHeight: Integer;
+    WM_TASKBAR_CREATED: Integer;
     function ReadFolder(strPath: string; Directory: Bool): Integer;
     function GetFile(FileName: string):TFichier;
     procedure LVDisplayFiles;
@@ -202,6 +207,7 @@ type
     function StateChanged: SaveType;
     function PMnuSaveEnable (Enabled: Boolean):Boolean;
     procedure CropBitmap(InBitmap, OutBitMap : TBitmap; Enabled: Boolean); //X, Y, W, H :Integer);
+    function NoRedirect(FilName: String):String;
   end;
 
 const
@@ -277,6 +283,12 @@ var
   CurVer, NewVer: Int64;
   s: String;
 begin
+  // Exoplorer restarted, need to reload tray
+  if Msg.Msg = WM_TASKBAR_CREATED then
+  begin
+     CreateTrayIcon;
+     Msg.Result:= 1;
+  end;
   // Message de demande de fermeture de session
   // si nécessaire, on le met dans RunOnce
   if Msg.Msg = WM_QUERYENDSESSION then
@@ -322,6 +334,23 @@ begin
   inherited;
 end;
 
+procedure TFPrgMgr.CreateTrayIcon;
+begin
+  if Assigned(TrayProgMan) then
+  begin
+    TrayProgMan.Free;
+    Application.ProcessMessages;
+  end;
+  TrayProgMan:= TJvTrayIconN.Create(self);
+  With TrayProgMan do
+  begin
+    Active:= MiniInTray;
+    PopupMenu:= TrayMenu;
+    Visibility:= [tvVisibleTaskBar,tvVisibleTaskList,tvAutoHide,tvRestoreDbClick];
+    OnMinimizeToTray:= TrayProgmanMinimizeToTray;
+  end;
+end;
+
 procedure TFPrgMgr.FormCreate(Sender: TObject);
 const
   ChangeWMFProcName='ChangeWindowMessageFilter';
@@ -334,7 +363,9 @@ var
 begin
   Inherited;
   First:= True;
-  // Largeur minimum à la création
+  //Obtain message value when task bar created 
+   WM_TASKBAR_CREATED:= RegisterWindowMessage('TaskBarCreated');
+   // Largeur minimum à la création
   FMinWidth := SBQuit.Left+SBQuit.Width+10+CBDisplay.Width+10+CBSort.Width+10+6;                 //Self.Width;
   // Redirect the ListView's WindowProc to ListViewWndProc
   FOrgListViewWndProc := ListView1.WindowProc;
@@ -416,7 +447,9 @@ var
 begin
   inherited ;
   If not First then exit;
-  // Ces personnalisations ne fonctionnent que lorsque tous les composants de l'application ont été créés
+  // Create TrayIcon
+  CreateTrayIcon;
+ // Ces personnalisations ne fonctionnent que lorsque tous les composants de l'application ont été créés
   // Uniquement au premier lancement !!
   // On récupère les noms du menu système pour le menu tray
   {SysMenu:= GetSystemMenu (Handle, False);
@@ -907,6 +940,7 @@ begin
   end;
   ImageList.Free;
   ListeFichiers.Free;
+  FreeAndNil(TrayProgman);
   FreeAndNil(langnums);
   FreeAndNil(langfile);
 end;
@@ -918,6 +952,24 @@ begin
   PMnuSave.Enabled:= True;
   //ImgSaveList.GetBitmap(1,PMnuSave.Bitmap);
   PMnuSaveEnable(True);
+end;
+
+function TFPrgMgr.NoRedirect(FilName: String):String;
+var
+  s: String;
+begin
+  result:= FilName;
+  if not FileExists(FilName) then
+  begin
+    // in case of x64
+    If WinVersion1.Ver64bit then
+    begin
+      s:= StringReplace(FilName, 'Program Files (x86)', 'Program Files', [rfIgnoreCase]);
+      s:= StringReplace(s, '%SystemRoot%', SystemRoot,[rfIgnoreCase]);
+      s:= StringReplace(s, 'System32', 'Sysnative',[rfIgnoreCase]);
+      result:= StringReplace(s, '%UserProfile%', UserProfile,[rfIgnoreCase]);
+    end;
+  end;
 end;
 
 function TFPrgMgr.GetFile(FileName: string):TFichier;
@@ -955,13 +1007,15 @@ begin
   begin
    If StrLen (LinkInfo.Description) > 0 then Result.Description:= LinkInfo.Description ;
    Result.Name:= ExtractFileName(LinkInfo.FullPathAndNameOfFileToExecute);
-   Result.Path:= ExtractFilepath(LinkInfo.FullPathAndNameOfFileToExecute);
+   Result.Path:= ExtractFilepath(NoRedirect(LinkInfo.FullPathAndNameOfFileToExecute));
+   Result.StartPath:= LinkInfo.FullPathAndNameOfWorkingDirectroy;
    if StrLen(LinkInfo.FullPathAndNameOfFileContiningIcon) > 0
    then s1:= LinkInfo.FullPathAndNameOfFileContiningIcon else s1:= LinkInfo.FullPathAndNameOfFileToExecute;
    if length(s1) > 0 then
    begin
       Result.IconIndex:= LinkInfo.IconIndex;
-      if FileExists(s1) then s:=  s1 else
+      s:= NoRedirect(s1);
+      {if FileExists(s1) then s:=  s1 else
       // in case of x64
       If WinVersion1.Ver64bit then
       begin
@@ -969,9 +1023,9 @@ begin
         s:= StringReplace(s, '%SystemRoot%', SystemRoot,[rfIgnoreCase]);
         s:= StringReplace(s, 'System32', 'Sysnative',[rfIgnoreCase]);
         s:= StringReplace(s, '%UserProfile%', UserProfile,[rfIgnoreCase]);
-      end;
+      end;}
       Result.Params:= LinkInfo.ParamStringsOfFileToExecute;
-      Result.StartPath:= LinkInfo.FullPathAndNameOfWorkingDirectroy;
+      
     end;
   end;
   Result.IconFile:= s;
@@ -2095,6 +2149,20 @@ begin
 
  // If (Height < FMinHeight) then Height:= FminHeight;
   
+end;
+
+procedure TFPrgMgr.PMnuAddFileClick(Sender: TObject);
+begin
+  SBAddFileClick(self);
+end;
+
+procedure TFPrgMgr.Timer2Timer(Sender: TObject);
+begin
+ // Beep;
+ //TrayProgman.Active:= False;
+ // TrayProgman.Active:= True;
+  //Timer2.Enabled:= False;
+  //TrayProgman.Active:= True;
 end;
 
 end.

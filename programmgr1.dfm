@@ -1,8 +1,8 @@
 object FPrgMgr: TFPrgMgr
-  Left = 892
-  Top = 669
+  Left = 1039
+  Top = 296
   Width = 585
-  Height = 380
+  Height = 381
   VertScrollBar.Visible = False
   Caption = 'Gestionnaire de programmes'
   Color = clBtnFace
@@ -38,7 +38,7 @@ object FPrgMgr: TFPrgMgr
     Left = 0
     Top = 40
     Width = 569
-    Height = 259
+    Height = 260
     Align = alClient
     BevelOuter = bvNone
     Columns = <>
@@ -545,7 +545,7 @@ object FPrgMgr: TFPrgMgr
   end
   object PnlStatus: TPanel
     Left = 0
-    Top = 299
+    Top = 300
     Width = 569
     Height = 42
     Align = alBottom
@@ -762,6 +762,7 @@ object FPrgMgr: TFPrgMgr
     end
     object PMnuAddFile: TMenuItem
       Caption = 'Ajouter un raccourci ou un fichier'
+      OnClick = PMnuAddFileClick
     end
     object N5: TMenuItem
       Caption = '-'
@@ -960,14 +961,13 @@ object FPrgMgr: TFPrgMgr
     Left = 216
     Top = 107
   end
-  object TrayProgman: TJvTrayIconN
-    Active = True
+  object TrayProgman2: TJvTrayIconN
     IconIndex = 0
     PopupMenu = TrayMenu
     Visibility = [tvVisibleTaskBar, tvVisibleTaskList, tvAutoHide, tvRestoreDbClick]
     OnMinimizeToTray = TrayProgmanMinimizeToTray
     Left = 422
-    Top = 141
+    Top = 140
   end
   object TrayMenu: TPopupMenu
     Left = 257
