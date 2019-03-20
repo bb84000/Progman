@@ -935,8 +935,8 @@ begin
     end;
   end else
   begin
-    ListeChange:= False;
     SaveConfig(GroupName, StateChanged);
+    ListeChange:= False;
   end;
   ImageList.Free;
   ListeFichiers.Free;
@@ -1805,7 +1805,7 @@ if (Msg.message = WM_DROPFILES) and (Msg.hwnd = ListView1.Handle) then
 
 begin
 
-Beep;
+//Beep;
 
 end;
 end;

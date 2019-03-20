@@ -1,19 +1,34 @@
 [Closed Files]
-File_0=SourceModule,'C:\Users\Bernard\Delphi\sdtp\Progman\programmgr1.pas',0,1,346,47,367,1,0
-File_1=SourceModule,'C:\Users\Bernard\Delphi\sdtp\Progman\history.txt',0,1,88,14,102,0,0
-File_2=SourceModule,'C:\Users\Bernard\Delphi\sdtp\Progman\Win7UAC.xml',0,1,1,25,4,0,0
-File_3=SourceModule,'c:\program files (x86)\borland\delphi7\source\rtl\Win\Windows.pas',0,1,30383,57,30397,0,0
-File_4=SourceModule,'c:\program files (x86)\borland\delphi7\source\rtl\Win\Messages.pas',0,1,1,1,56,0,0
-File_5=SourceModule,'c:\program files (x86)\borland\delphi7\source\rtl\common\classes.pas',0,1,1329,1,1315,0,0
-File_6=SourceModule,'c:\users\bernard\delphi\bbcomponents\JvTrayIconN.pas',0,1,419,48,448,0,0
-File_7=SourceModule,'c:\program files (x86)\borland\delphi7\source\rtl\Sys\system.pas',0,1,1,1,18,0,0
-File_8=SourceModule,'C:\Users\Bernard\Delphi\BBComponents\about.pas',0,1,1,1,1,3,0
-File_9=SourceModule,'c:\program files (x86)\borland\delphi7\source\vcl\Buttons.pas',0,1,114,21,126,0,0
+File_0=SourceModule,'c:\users\bernard\delphi\bbcomponents\JvTrayIconN.pas',0,1,970,27,992,0,0
+File_1=SourceModule,'c:\program files (x86)\borland\delphi7\source\rtl\Win\Windows.pas',0,1,30383,57,30397,0,0
+File_2=SourceModule,'c:\program files (x86)\borland\delphi7\source\rtl\Win\Messages.pas',0,1,1,1,56,0,0
+File_3=SourceModule,'c:\program files (x86)\borland\delphi7\source\rtl\common\classes.pas',0,1,1329,1,1315,0,0
+File_4=SourceModule,'c:\program files (x86)\borland\delphi7\source\rtl\Sys\system.pas',0,1,1,1,18,0,0
+File_5=SourceModule,'C:\Users\Bernard\Delphi\BBComponents\about.pas',0,1,1,1,1,3,0
+File_6=SourceModule,'c:\program files (x86)\borland\delphi7\source\vcl\Buttons.pas',0,1,114,21,126,0,0
 
 [Modules]
-Module0=C:\Users\Bernard\Delphi\sdtp\Progman\ProgramGrpMgr.dpr
-Count=1
+Module0=C:\Users\Bernard\Delphi\sdtp\Progman\Win7UAC.xml
+Module1=C:\Users\Bernard\Delphi\sdtp\Progman\history.txt
+Module2=C:\Users\Bernard\Delphi\sdtp\Progman\programmgr1.pas
+Module3=C:\Users\Bernard\Delphi\sdtp\Progman\ProgramGrpMgr.dpr
+Count=4
 EditWindowCount=1
+
+[C:\Users\Bernard\Delphi\sdtp\Progman\Win7UAC.xml]
+ModuleType=SourceModule
+FormState=0
+FormOnTop=0
+
+[C:\Users\Bernard\Delphi\sdtp\Progman\history.txt]
+ModuleType=SourceModule
+FormState=0
+FormOnTop=0
+
+[C:\Users\Bernard\Delphi\sdtp\Progman\programmgr1.pas]
+ModuleType=SourceModule
+FormState=1
+FormOnTop=0
 
 [C:\Users\Bernard\Delphi\sdtp\Progman\ProgramGrpMgr.dpr]
 ModuleType=SourceModule
@@ -25,34 +40,58 @@ FormState=0
 FormOnTop=0
 
 [EditWindow0]
-ViewCount=1
-CurrentView=0
+ViewCount=4
+CurrentView=3
 View0=0
+View1=1
+View2=2
+View3=3
 CodeExplorer=CodeExplorer@EditWindow0
 MessageView=MessageView@EditWindow0
 Create=1
 Visible=1
 State=0
-Left=294
-Top=147
+Left=359
+Top=160
 Width=1302
 Height=682
 MaxLeft=-1
 MaxTop=-1
 ClientWidth=1286
 ClientHeight=643
-LeftPanelSize=140
+LeftPanelSize=228
 LeftPanelClients=CodeExplorer@EditWindow0
 LeftPanelData=000004000000000000000000000000000000000000000000000100000000000000000C000000436F64654578706C6F726572FFFFFFFF
 RightPanelSize=0
 BottomPanelSize=0
 BottomPanelClients=MessageView@EditWindow0
-BottomPanelData=00000400010000000B0000004D657373616765566965770000000000000000000000000000000000FFFFFFFF
+BottomPanelData=00000400010000000B0000004D657373616765566965770605000000000000025500000000000000010000000000000000000000000100000000060500000B0000004D65737361676556696577FFFFFFFF
 
 [View0]
 Module=C:\Users\Bernard\Delphi\sdtp\Progman\ProgramGrpMgr.dpr
 CursorX=1
 CursorY=1
+TopLine=1
+LeftCol=1
+
+[View1]
+Module=C:\Users\Bernard\Delphi\sdtp\Progman\programmgr1.pas
+CursorX=1
+CursorY=940
+TopLine=913
+LeftCol=1
+
+[View2]
+Module=C:\Users\Bernard\Delphi\sdtp\Progman\history.txt
+CursorX=9
+CursorY=106
+TopLine=88
+LeftCol=1
+
+[View3]
+Module=C:\Users\Bernard\Delphi\sdtp\Progman\Win7UAC.xml
+CursorX=25
+CursorY=4
 TopLine=1
 LeftCol=1
 
@@ -162,7 +201,7 @@ LRDockWidth=190
 Dockable=1
 SplitPos=133
 ArrangeBy=Name
-SelectedItem=
+SelectedItem=Name
 ExpandedItems=Anchors,BorderIcons,Constraints,DropdownMenu,IconOptions,Options,OptionsEx,VertScrollBar,Visibility
 HiddenCategories=Legs
 
@@ -299,27 +338,27 @@ Visible=1
 State=0
 Left=0
 Top=12
-Width=140
+Width=228
 Height=631
 MaxLeft=-1
 MaxTop=-1
-ClientWidth=140
+ClientWidth=228
 ClientHeight=631
 TBDockHeight=305
-LRDockWidth=140
+LRDockWidth=228
 Dockable=1
 
 [MessageView@EditWindow0]
 Create=1
 Visible=0
 State=0
-Left=-104
-Top=-714
-Width=443
+Left=12
+Top=0
+Width=1274
 Height=85
 MaxLeft=-1
 MaxTop=-1
-ClientWidth=443
+ClientWidth=1274
 ClientHeight=85
 TBDockHeight=85
 LRDockWidth=443

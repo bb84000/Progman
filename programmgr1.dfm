@@ -1,6 +1,6 @@
 object FPrgMgr: TFPrgMgr
-  Left = 1039
-  Top = 296
+  Left = 798
+  Top = 115
   Width = 585
   Height = 381
   VertScrollBar.Visible = False

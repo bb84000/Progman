@@ -99,8 +99,12 @@ Les raccourcis sont rempalcés par les exécutables cibles dans la liste
 Correction d'un bug of Bug empêchant de ne pas sauvegarder les changements de liste
 Correction d'un bug dans la non redirection 64bits/32 bits
 
-Version 0.6.7.0 -16/03/2019
-Restauration de l'icone dans la zone de notification lors d'un redémarrage du shell  
+Version 0.6.7.0 - 16/03/2019
+Restauration de l'icone dans la zone de notification lors d'un redémarrage du shell
+
+Version 0.6.7.1 - 20/03/2019
+Light change to assure list change saved at program close
+
 
 
 
