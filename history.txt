@@ -89,7 +89,7 @@ Possibilité de ne pas afficher l'application dans la barre des tâches
 Affichage de la date des fichiers bkx pour la récupération d'anciennes configurations
 
 Version 0.6.6.2 - 10/03/2019
-Déplaceùent de la version de Windows vers le dialog de préférences
+Déplacement de la version de Windows vers le dialog de préférences
 Possibilité de masquer la barre d'outils et la barre de statut,(clic droit en dehors
   des icones de programmes pour masquer ou afficher ces barres)
 Réutilisation des bitmaps des boutons pour les popup menus
@@ -104,6 +104,9 @@ Restauration de l'icone dans la zone de notification lors d'un redémarrage du sh
 
 Version 0.6.7.1 - 20/03/2019
 Light change to assure list change saved at program close
+
+Version 0.6.7.2 - 21/03/2019
+Changed trayicon process when explorer crashes
 
 
 

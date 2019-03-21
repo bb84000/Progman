@@ -961,7 +961,7 @@ object FPrgMgr: TFPrgMgr
     Left = 216
     Top = 107
   end
-  object TrayProgman2: TJvTrayIconN
+  object TrayProgman: TJvTrayIconN
     IconIndex = 0
     PopupMenu = TrayMenu
     Visibility = [tvVisibleTaskBar, tvVisibleTaskList, tvAutoHide, tvRestoreDbClick]

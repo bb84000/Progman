@@ -15,6 +15,35 @@ uses
   Consts, JvTrayIconN;
 
 type
+
+  // TrayIcon properties record used to update or restore tray icon when explorer crashes
+  TrayIconProps = record
+     PrActive: Boolean;
+     PrAnimated: Boolean;
+     PrDelay: Integer;
+     PrDropDownMenu: TPopupMenu;
+     PrHint: String;
+     PrIcon: TIcon;
+     PrIconIndex: Integer;
+     PrIcons: TCustomImageList;
+     PrName: String;
+     PrPopupMenu: TPopupMenu;
+     PrSnap: Boolean;
+     PrTag: Integer;
+     PrVisibility: TTrayVisibilities;
+     EvOnAnimate: TAnimateEvent;
+     EvOnBalloonClick: TNotifyEvent;
+     EvOnBalloonHide: TNotifyEvent;
+     EvOnBalloonShow: TNotifyEvent;
+     EvOnClick: TMouseEvent;
+     EvOnContextPopup: TContextPopupEvent;
+     EvOnDblClick: TMouseEvent;
+     EvOnMinimizeToTray: TNotifyEvent;
+     EvOnMouseMove: TMouseMoveEvent;
+     EvOnMouseDown: TMouseEvent;
+     EvOnMouseUp: TMouseEvent;
+  end;
+
     SaveType = (None, State, All);
 
     TFPrgMgr = class(TForm)
@@ -46,7 +75,7 @@ type
     SBLoadConf: TSpeedButton;
     WinVersion1: TWinVersion;
     SBQuit: TSpeedButton;
-    TrayProgman2: TJvTrayIconN;
+    TrayProgman: TJvTrayIconN;
     TrayMenu: TPopupMenu;
     PTrayMnuRestore: TMenuItem;
     PTrayMnuMinimize: TMenuItem;
@@ -136,11 +165,16 @@ type
   private
     { Déclarations privées }
     FMinWidth, FminHeight : Integer;
-    TrayProgMan: TJvTrayIconN;
-    //procedure AppMessage(var Msg: TMsg; var Handled: Boolean);
+     //procedure AppMessage(var Msg: TMsg; var Handled: Boolean);
     FOrgListViewWndProc: TWndMethod;
+    TrayProps: TrayIconProps;
+    //procedure AppMessage(var Msg: TMsg; var Handled: Boolean);
+    procedure CreateTrayIcon(properties: TrayIconProps);
+    procedure LoadTrayIconProps(properties: TrayIconProps);
+    procedure ReadTrayIconProps(var properties: TrayIconProps);
+
     procedure ListViewWndProc(var Msg: TMessage);
-    procedure CreateTrayIcon;
+
   public
     { Déclarations publiques }
     YesBtn, NoBtn, CancelBtn: String;
@@ -190,7 +224,7 @@ type
     PrevWindowState: TWindowState;
     AppState, PrevAppState : Integer;
     BarsHeight: Integer;
-    WM_TASKBAR_CREATED: Integer;
+    WM_TASKBAR_CREATED: DWORD;
     function ReadFolder(strPath: string; Directory: Bool): Integer;
     function GetFile(FileName: string):TFichier;
     procedure LVDisplayFiles;
@@ -286,7 +320,9 @@ begin
   // Exoplorer restarted, need to reload tray
   if Msg.Msg = WM_TASKBAR_CREATED then
   begin
-     CreateTrayIcon;
+     ReadTrayIconProps(TrayProps);
+     Application.ProcessMessages;
+     CreateTrayIcon(TrayProps);
      Msg.Result:= 1;
   end;
   // Message de demande de fermeture de session
@@ -334,22 +370,58 @@ begin
   inherited;
 end;
 
-procedure TFPrgMgr.CreateTrayIcon;
+procedure TFPrgMgr.CreateTrayIcon(properties: TrayIconProps);
 begin
-  if Assigned(TrayProgMan) then
+  if Assigned(TrayProgman) then
   begin
-    TrayProgMan.Free;
+    TrayProgman.Free;
     Application.ProcessMessages;
   end;
-  TrayProgMan:= TJvTrayIconN.Create(self);
-  With TrayProgMan do
+  TrayProgman:= TJvTrayIconN.Create(self);
+  LoadTrayIconProps(TrayProps);
+end;
+
+// Sauvegarde des propriétés du trayicon
+
+procedure TFPrgMgr.ReadTrayIconProps(var properties: TrayIconProps);
+begin
+  With properties do
   begin
-    Active:= MiniInTray;
-    PopupMenu:= TrayMenu;
-    Visibility:= [tvVisibleTaskBar,tvVisibleTaskList,tvAutoHide,tvRestoreDbClick];
-    OnMinimizeToTray:= TrayProgmanMinimizeToTray;
+    PrActive:= TrayProgman.Active;
+    PrAnimated:= TrayProgman.Animated;
+    PrDelay:= TrayProgman.Delay;
+    // As Icon property is created from external file at design time, it will be lost
+    // if we free the component, so we need to duplicate it before.
+    If not Assigned (TrayProps.PrIcon) then TrayProps.PrIcon:= TIcon.Create;
+    PrIcon.Handle:= DuplicateIcon(0, TrayProgman.Icon.Handle);
+    PrIconIndex:= TrayProgman.IconIndex;
+    PrIcons:= TrayProgman.Icons;
+    PrHint:= TrayProgman.Hint;
+    PrPopupMenu:= TrayProgman.PopupMenu;
+    PrVisibility:= TrayProgman.Visibility;
+    EvOnDblClick:= TrayProgman.OnDblClick;
+    EvOnMinimizeToTray:=  TrayProgman.OnMinimizeToTray;
   end;
 end;
+
+procedure TFPrgMgr.LoadTrayIconProps(properties: TrayIconProps);
+begin
+  With properties do
+  begin
+    TrayProgman.Active:= PrActive;
+    TrayProgman.Animated:= PrAnimated;
+    TrayProgman.Delay:= PrDelay;
+    TrayProgman.Icon:= PrIcon;
+    TrayProgman.IconIndex:= PrIconIndex;
+    TrayProgman.Icons:= PrIcons;
+    TrayProgman.Hint:= PrHint;
+    TrayProgman.PopupMenu:= PrPopupMenu;
+    TrayProgman.Visibility:= PrVisibility;
+    TrayProgman.OnDblClick:= EvOnDblClick;
+    TrayProgman.OnMinimizeToTray:= EvOnMinimizeToTray;
+  end;
+end;
+
 
 procedure TFPrgMgr.FormCreate(Sender: TObject);
 const
@@ -448,7 +520,7 @@ begin
   inherited ;
   If not First then exit;
   // Create TrayIcon
-  CreateTrayIcon;
+  //CreateTrayIcon;
  // Ces personnalisations ne fonctionnent que lorsque tous les composants de l'application ont été créés
   // Uniquement au premier lancement !!
   // On récupère les noms du menu système pour le menu tray
