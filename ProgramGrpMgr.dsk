@@ -1,33 +1,28 @@
 [Closed Files]
-File_0=SourceModule,'c:\users\bernard\delphi\bbcomponents\JvTrayIconN.pas',0,1,970,27,992,0,0
-File_1=SourceModule,'c:\program files (x86)\borland\delphi7\source\rtl\Win\Windows.pas',0,1,30383,57,30397,0,0
-File_2=SourceModule,'c:\program files (x86)\borland\delphi7\source\rtl\Win\Messages.pas',0,1,1,1,56,0,0
-File_3=SourceModule,'c:\program files (x86)\borland\delphi7\source\rtl\common\classes.pas',0,1,1329,1,1315,0,0
-File_4=SourceModule,'c:\program files (x86)\borland\delphi7\source\rtl\Sys\system.pas',0,1,1,1,18,0,0
-File_5=SourceModule,'C:\Users\Bernard\Delphi\BBComponents\about.pas',0,1,1,1,1,3,0
-File_6=SourceModule,'c:\program files (x86)\borland\delphi7\source\vcl\Buttons.pas',0,1,114,21,126,0,0
+File_0=SourceModule,'C:\Users\Bernard\Delphi\sdtp\Progman\Property1.pas',0,1,1,1,1,0,0
+File_1=SourceModule,'c:\users\bernard\delphi\bbcomponents\JvTrayIconN.pas',0,1,1,113,3,0,0
+File_2=SourceModule,'C:\Users\Bernard\Delphi\sdtp\Progman\LoadConf1.pas',0,1,1,1,1,0,0
+File_3=SourceModule,'C:\Users\Bernard\Delphi\sdtp\Progman\Win7UAC.xml',0,1,1,25,4,0,0
+File_4=SourceModule,'C:\Users\Bernard\Delphi\sdtp\courier\history.txt',0,1,170,1,182,0,0
+File_5=SourceModule,'c:\program files (x86)\borland\delphi7\source\rtl\Win\Windows.pas',0,1,30383,57,30397,0,0
+File_6=SourceModule,'c:\program files (x86)\borland\delphi7\source\rtl\Win\Messages.pas',0,1,1,1,56,0,0
+File_7=SourceModule,'c:\program files (x86)\borland\delphi7\source\rtl\common\classes.pas',0,1,1329,1,1315,0,0
 
 [Modules]
-Module0=C:\Users\Bernard\Delphi\sdtp\Progman\history.txt
-Module1=C:\Users\Bernard\Delphi\sdtp\Progman\Win7UAC.xml
-Module2=C:\Users\Bernard\Delphi\sdtp\Progman\programmgr1.pas
-Module3=C:\Users\Bernard\Delphi\sdtp\Progman\ProgramGrpMgr.dpr
-Count=4
+Module0=C:\Users\Bernard\Delphi\sdtp\Progman\programmgr1.pas
+Module1=C:\Users\Bernard\Delphi\sdtp\Progman\history.txt
+Module2=C:\Users\Bernard\Delphi\sdtp\Progman\ProgramGrpMgr.dpr
+Count=3
 EditWindowCount=1
-
-[C:\Users\Bernard\Delphi\sdtp\Progman\history.txt]
-ModuleType=SourceModule
-FormState=0
-FormOnTop=0
-
-[C:\Users\Bernard\Delphi\sdtp\Progman\Win7UAC.xml]
-ModuleType=SourceModule
-FormState=0
-FormOnTop=0
 
 [C:\Users\Bernard\Delphi\sdtp\Progman\programmgr1.pas]
 ModuleType=SourceModule
 FormState=1
+FormOnTop=0
+
+[C:\Users\Bernard\Delphi\sdtp\Progman\history.txt]
+ModuleType=SourceModule
+FormState=0
 FormOnTop=0
 
 [C:\Users\Bernard\Delphi\sdtp\Progman\ProgramGrpMgr.dpr]
@@ -40,26 +35,25 @@ FormState=0
 FormOnTop=0
 
 [EditWindow0]
-ViewCount=4
-CurrentView=2
+ViewCount=3
+CurrentView=1
 View0=0
 View1=1
 View2=2
-View3=3
 CodeExplorer=CodeExplorer@EditWindow0
 MessageView=MessageView@EditWindow0
 Create=1
 Visible=1
 State=0
-Left=408
-Top=141
+Left=350
+Top=257
 Width=1302
 Height=682
 MaxLeft=-1
 MaxTop=-1
 ClientWidth=1286
 ClientHeight=643
-LeftPanelSize=228
+LeftPanelSize=140
 LeftPanelClients=CodeExplorer@EditWindow0
 LeftPanelData=000004000000000000000000000000000000000000000000000100000000000000000C000000436F64654578706C6F726572FFFFFFFF
 RightPanelSize=0
@@ -76,23 +70,16 @@ LeftCol=1
 
 [View1]
 Module=C:\Users\Bernard\Delphi\sdtp\Progman\programmgr1.pas
-CursorX=7
-CursorY=171
-TopLine=156
+CursorX=40
+CursorY=2080
+TopLine=2079
 LeftCol=1
 
 [View2]
 Module=C:\Users\Bernard\Delphi\sdtp\Progman\history.txt
-CursorX=9
-CursorY=92
+CursorX=1
+CursorY=114
 TopLine=88
-LeftCol=1
-
-[View3]
-Module=C:\Users\Bernard\Delphi\sdtp\Progman\Win7UAC.xml
-CursorX=25
-CursorY=4
-TopLine=1
 LeftCol=1
 
 [Watches]
@@ -118,7 +105,7 @@ Dockable=1
 
 [Breakpoints]
 Count=1
-Breakpoint0='C:\Users\Bernard\Delphi\sdtp\Progman\programmgr1.pas',1619,'',0,1,'',1,0,0,'',1,'','',''
+Breakpoint0='C:\Users\Bernard\Delphi\sdtp\Progman\programmgr1.pas',1520,'',0,1,'',1,0,0,'',1,'','',''
 
 [AddressBreakpoints]
 Count=0
@@ -201,7 +188,7 @@ LRDockWidth=190
 Dockable=1
 SplitPos=133
 ArrangeBy=Name
-SelectedItem=Name
+SelectedItem=OnContextPopup
 ExpandedItems=Anchors,BorderIcons,Constraints,DropdownMenu,IconOptions,Options,OptionsEx,VertScrollBar,Visibility
 HiddenCategories=Legs
 
@@ -338,14 +325,14 @@ Visible=1
 State=0
 Left=0
 Top=12
-Width=228
+Width=140
 Height=631
 MaxLeft=-1
 MaxTop=-1
-ClientWidth=228
+ClientWidth=140
 ClientHeight=631
 TBDockHeight=305
-LRDockWidth=228
+LRDockWidth=140
 Dockable=1
 
 [MessageView@EditWindow0]

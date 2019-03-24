@@ -114,8 +114,6 @@ type
     procedure PMnuDeleteClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure SBAddFileClick(Sender: TObject);
-    //procedure SBDeleteAllClick(Sender: TObject);
-    //procedure ListView1Resize(Sender: TObject);
     procedure ListView1SelectItem(Sender: TObject; Item: TListItem;
       Selected: Boolean);
     procedure PnlToolsResize(Sender: TObject);
@@ -138,7 +136,6 @@ type
     procedure ODlg1Show(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
     procedure SBLoadConfClick(Sender: TObject);
-    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure SBQuitClick(Sender: TObject);
     procedure FormConstrainedResize(Sender: TObject; var MinWidth,
       MinHeight, MaxWidth, MaxHeight: Integer);
@@ -160,19 +157,16 @@ type
     procedure PMnuQuitClick(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure PMnuAddFileClick(Sender: TObject);
-    procedure Timer2Timer(Sender: TObject);
+    procedure TrayProgmanCreateTaskBar(Sender: TObject);
     
   private
     { Déclarations privées }
     FMinWidth, FminHeight : Integer;
-     //procedure AppMessage(var Msg: TMsg; var Handled: Boolean);
     FOrgListViewWndProc: TWndMethod;
     TrayProps: TrayIconProps;
-    //procedure AppMessage(var Msg: TMsg; var Handled: Boolean);
     procedure CreateTrayIcon(properties: TrayIconProps);
     procedure LoadTrayIconProps(properties: TrayIconProps);
     procedure ReadTrayIconProps(var properties: TrayIconProps);
-
     procedure ListViewWndProc(var Msg: TMessage);
 
   public
@@ -252,8 +246,7 @@ const
     
 var
   FPrgMgr: TFPrgMgr;
-//  Wow64Redirection: LongBool;
-    hUserDll    : THandle;
+  hUserDll    : THandle;
 
 
 implementation
@@ -317,7 +310,7 @@ var
   CurVer, NewVer: Int64;
   s: String;
 begin
-  // Exoplorer restarted, need to reload tray
+  // Explorer restarted, need to reload tray
   if Msg.Msg = WM_TASKBAR_CREATED then
   begin
      ReadTrayIconProps(TrayProps);
@@ -329,9 +322,6 @@ begin
   // si nécessaire, on le met dans RunOnce
   if Msg.Msg = WM_QUERYENDSESSION then
   begin
-    //SaveConfig (GroupName, all);
-    //Application.ProcessMessages;
-    //Msg.Result := 1 ;
     if not StartWin then
     begin
       reg := TRegistry.Create;
@@ -513,30 +503,9 @@ end;
 procedure TFPrgMgr.FormActivate(Sender: TObject);
 var
   VersionInfo : TVerInfoObj;
-//  SysMenu: Hmenu;
-//  MenuItemInf: TMenuItemInfo;
-//  Buffer: array[0..255] of Char;
 begin
   inherited ;
   If not First then exit;
-  // Create TrayIcon
-  //CreateTrayIcon;
- // Ces personnalisations ne fonctionnent que lorsque tous les composants de l'application ont été créés
-  // Uniquement au premier lancement !!
-  // On récupère les noms du menu système pour le menu tray
-  {SysMenu:= GetSystemMenu (Handle, False);
-  MenuItemInf.cbSize := SizeOf(MenuItemInf);
-  MenuItemInf.fMask := MIIM_TYPE;
-  MenuItemInf.dwTypeData := Buffer;
-  MenuItemInf.cch := SizeOf(Buffer);
-  GetMenuItemInfo(SysMenu,SC_MINIMIZE ,False, MenuItemInf);
-  PTrayMnuMinimize.Caption:= Copy(Buffer, 1, MenuItemInf.cch);
-  MenuItemInf.cch := SizeOf(Buffer);
-  GetMenuItemInfo(SysMenu,SC_MAXIMIZE ,False, MenuItemInf);
-  PTrayMnuMaximize.Caption:= Copy(Buffer, 1, MenuItemInf.cch);
-  MenuItemInf.cch := SizeOf(Buffer);
-  GetMenuItemInfo(SysMenu,SC_RESTORE ,False, MenuItemInf);
-  PTrayMnuRestore.Caption:= Copy(Buffer, 1, MenuItemInf.cch);}
   PTrayMnuMaximize.Enabled:= True;
   PTrayMnuMinimize.Enabled:= True;
   PTrayMnuRestore.Enabled:= False;
@@ -625,7 +594,6 @@ begin
     Left:= StrToInt('$'+Copy(WState,9,4));
     Height:= StrToInt('$'+Copy(WState,13,4));
     Width:= StrToInt('$'+Copy(WState,17,4)) ;
-    //PnlWinVer.Width:= StrToInt('$'+Copy(WState,21,4)) ; Transfered to Preferences
   except
   end;
   // Restaure taille et position précédentes si demandé
@@ -671,23 +639,8 @@ begin
   Application.Icon.Handle:= ExtractIcon(handle, PChar(GrpIconFile), GrpIconIndex) else GrpIconFile:= Application.ExeName;
   ImgPrgSel.Picture.Icon:= Application.Icon;
   TrayProgman.Icon:= Application.Icon;
+  TrayProgman.Hint:= GrpName;
   LPrgSel.Caption:= Caption;
- // LWinVer.Caption:= WinVersion1.VerDetail;
-  {Case WinVersion1.VerTyp of
-     9: ImgWin.Picture:= FImages.ImgXP.Picture;    //XP
-     10: ImgWin.Picture:= FImages.ImgXP.Picture;   // server
-     11: ImgWin.Picture:= FImages.ImgVista.Picture;  // Vista
-     12: ImgWin.Picture:= FImages.ImgVista.Picture; // server
-     13: ImgWin.Picture:= FImages.ImgWin7.Picture; // server
-     14: ImgWin.Picture:= FImages.ImgWin7.Picture;  // Windows 7
-     15: ImgWin.Picture:= FImages.ImgWin8.Picture;  // Windows 8
-     16: ImgWin.Picture:= FImages.ImgWin8.Picture;  // Server
-     17: ImgWin.Picture:= FImages.Imgwin81.Picture;  // Windows 8.1
-     18: ImgWin.Picture:= FImages.Imgwin81.Picture;  // Windows 2012 Server R2
-     19: ImgWin.Picture:= FImages.ImgWin10.Picture;   // Windows 10
-     else ImgWin.Picture:= FImages.ImgWin10.Picture;
-  end;  }
-  //ImgWin.Hint:= WinVersion1.VerDetail;
   ListView1.SetFocus;      // Eviter le focus sur une liste déroulante ou autre chose
   //Version:= '0.5.0.0';
   ChkVersion;
@@ -770,13 +723,10 @@ begin
   Reg:= TRegistry.Create;
   Reg.RootKey:= HKEY_CURRENT_USER;
   Reg.OpenKey('Software\Microsoft\Windows\CurrentVersion\Run', True);
-  //s:= '';
-  //if StartMini then  s:= ' MINI' else s:= '' ;
   if StartWin  then  // Démarrage avec Windows coché
   begin
     if not Reg.ValueExists(TrimFileExt(ProgName)+'_'+GroupName) then
     reg.WriteString(TrimFileExt(ProgName)+'_'+GroupName, '"'+Application.ExeName+'" Grp='+GroupName) ;
-    //Reg.WriteString('MailAttente','"'+ParamStr(0)+'"'+s);
     Reg.CloseKey;
   end else if Reg.ValueExists(TrimFileExt(ProgName)+'_'+GroupName) then
   begin
@@ -841,7 +791,6 @@ begin
   CfgXML.attribute ['HideBars']:=  IntToStr(Integer(HideBars));
   // Position fenêtre
   WState:= '';
-  //WinPos[0]:= LongInt(WindowState);
   If WindowState = wsMaximized then
   begin
     AppState :=  SW_SHOWMAXIMIZED;                   // Application is never maximized, only the main form
@@ -850,16 +799,13 @@ begin
     GetWindowPlacement(Application.Handle, @WindowPlacement);
     AppState := WindowPlacement.showCmd;             // Elsewhere, we use the app placement
   end;
-   //WinPos[0]:= WindowPlacement.showCmd;
   WinPos[0]:= AppState;
   if Top < 0 then WinPos[1]:= 0 else WinPos[1]:= Top;
   if Left < 0 then WinPos[2]:= 0 else WinPos[2]:= Left;
   WinPos[3]:= Height;
   WinPos[4]:= Width;
-  //WinPos[5]:= PnlWinVer.Width;
   For i:= 0 to 4 do WState:=WState+IntToHex(WinPos[i], 4);
   CfgXML.attribute ['WState']:=  WState;
-  //CfgXML.attribute ['paneldescw']:= IntToStr(PnlWinVer.Width);
   CfgXML.attribute ['grpiconfile']:= GrpIconFile;
   CfgXML.attribute ['grpiconindex']:= IntToStr(GrpIconIndex);
   CfgXML.Attribute ['NoChkNewVer']:= IntToStr(Integer(NoChkNewVer));
@@ -902,14 +848,11 @@ begin
   Reg:= TRegistry.Create;
   Reg.RootKey:= HKEY_CURRENT_USER;
   Reg.OpenKey('Software\Microsoft\Windows\CurrentVersion\Run', True);
-  //s:= '';
-  //if StartMini then  s:= ' MINI' else s:= '' ;
   if StartWin  then  // Démarrage avec Windows coché
   begin
     if not Reg.ValueExists(TrimFileExt(ProgName)+'_'+GroupName) then
     reg.WriteString(TrimFileExt(ProgName)+'_'+GroupName, '"'+Application.ExeName+'" Grp='+GroupName) ;
-    //Reg.WriteString('MailAttente','"'+ParamStr(0)+'"'+s);
-    Reg.CloseKey;
+     Reg.CloseKey;
   end else if Reg.ValueExists(TrimFileExt(ProgName)+'_'+GroupName) then
   begin
     Reg.DeleteValue(TrimFileExt(ProgName)+'_'+GroupName);
@@ -947,14 +890,12 @@ begin
     GetWindowPlacement(Handle, @WindowPlacement);
     AppState := WindowPlacement.showCmd;
   end;
-  //AppState := WindowPlacement.showCmd;
  WState:= '';
   WinPos[0]:= AppState;
   if Top < 0 then WinPos[1]:= 0 else WinPos[1]:= Top;
   if Left < 0 then WinPos[2]:= 0 else WinPos[2]:= Left;
   WinPos[3]:= Height;
   WinPos[4]:= Width;
-  //WinPos[5]:= PnlWinVer.Width;
   For i:= 0 to 4 do WState:=WState+IntToHex(WinPos[i], 4);
   If ((WState<>PrevWState) or
            (GrpIconFile<>PrevGrpIconFile) or
@@ -1022,7 +963,6 @@ begin
   ListeChange:= True;
   SBSave.Enabled:= True;
   PMnuSave.Enabled:= True;
-  //ImgSaveList.GetBitmap(1,PMnuSave.Bitmap);
   PMnuSaveEnable(True);
 end;
 
@@ -1087,15 +1027,6 @@ begin
    begin
       Result.IconIndex:= LinkInfo.IconIndex;
       s:= NoRedirect(s1);
-      {if FileExists(s1) then s:=  s1 else
-      // in case of x64
-      If WinVersion1.Ver64bit then
-      begin
-        s:= StringReplace(s1, 'Program Files (x86)', 'Program Files', [rfIgnoreCase]);
-        s:= StringReplace(s, '%SystemRoot%', SystemRoot,[rfIgnoreCase]);
-        s:= StringReplace(s, 'System32', 'Sysnative',[rfIgnoreCase]);
-        s:= StringReplace(s, '%UserProfile%', UserProfile,[rfIgnoreCase]);
-      end;}
       Result.Params:= LinkInfo.ParamStringsOfFileToExecute;
       
     end;
@@ -1104,7 +1035,6 @@ begin
   if ExtractIcon(Handle, PChar(s), Result.IconIndex) = 0 then
   begin
     GetExtIconFile(Result.IconFile, Result.IconIndex, IconDefFile);
-    //Result.IconFile:= s;
   end;
 
 end;
@@ -1132,9 +1062,6 @@ end;
 
 procedure TFPrgMgr.LVDisplayFiles;
 const
-//{$ifdef UNICODE}
-// ExtractProcName='PrivateExtractIconsW';
-//{$else}
  ExtractProcName='PrivateExtractIconsA';
 type
   TExtractFunc = function(lpszFile: PChar; nIconIndex, cxIcon, cyIcon: integer; phicon: PHANDLE; piconid: PDWORD; nicon, flags: DWORD): DWORD; stdcall;
@@ -1302,35 +1229,16 @@ end;
 
 procedure TFPrgMgr.CBDisplayChange(Sender: TObject);
 begin
-//LV_InsertFiles(CurDir, ListView1,  False);
   LVDisplayFiles;
-  //ListeFichiers.SortDirection:= descend;
   ListeChange:= True;
   SBSave.Enabled:= True;
   PMnuSave.Enabled:= PMnuSaveEnable(True);
-
 end;
-
-
-
-
-
-
-
 
 
 procedure TFPrgMgr.ListView1InfoTip(Sender: TObject; Item: TListItem;
   var InfoTip: String);
-//var
-//  LinkInfo: TShellLinkInfoStruct;
-//  s: string;
 begin
-//  if length (ListeFichiers.GetItem(Item.Index).Description) = 0 then
-//  begin
-//    s:= ListeFichiers.GetItem(Item.Index).Path+ListeFichiers.GetItem(Item.index).Name;
-//    StrPCopy(LinkInfo.FullPathAndNameOfLinkFile, s);
-//    GetLinkInfo(@LinkInfo);
-//    If StrLen (LinkInfo.Description) > 0 then
   InfoTip := ListeFichiers.GetItem(Item.Index).Description ;
 end;
 
@@ -1376,7 +1284,6 @@ end;
 
 procedure TFPrgMgr.PMnuDeleteClick(Sender: TObject);
 var
- //Item : TListItem;
  i: Integer;
  s: string;
 begin
@@ -1445,9 +1352,8 @@ var
  Oldpath: String;
 begin
   Item := ListView1.Selected;
- // DisableWowRedirection ;
- If Item <> nil then
- begin
+  If Item <> nil then
+begin
     Fproperty.IconDefFile:= IconDefFile;
     MyFichier:=  ListeFichiers.GetItem(Item.Index);
     Fproperty.IconFile:= MyFichier.IconFile;
@@ -1524,7 +1430,6 @@ begin
   
   dlgTitle:= SBrow1.Caption;
   SBrow1.InitialPath:= StartMenu;
-  //SBrow1.StatusText:= StartMenu;
   Timer1.Enabled:= True;
   if SBrow1.Execute then
   begin
@@ -1554,10 +1459,6 @@ end;
 
 
  procedure TFPrgMgr.ModLangue ;
-//var
-//s : string;
-//  i: Integer;
-//  ts: TStrings;
 begin
 //ShowMessage(LangStr);
 With LangFile do
@@ -1685,33 +1586,6 @@ begin
      try
        LPrgSel.Caption:= ListeFichiers.GetItem(Item.index).Description;
        ImgPrgSel.Picture.Icon.Handle:= ExtractIcon (handle, PChar(ListeFichiers.GetItem(Item.index).IconFile), ListeFichiers.GetItem(Item.index).IconIndex);
-       //ImgPrgSel.Picture.Icon := Application.Icon;
-        {Myicon := TIcon.Create;
-       try
-         ZeroMemory(@LinkInfo, SizeOf(LinkInfo));
-         s:= ListeFichiers.GetItem(Item.index).Path+ ListeFichiers.GetItem(Item.index).Name ;
-         StrPCopy (LinkInfo.FullPathAndNameOfLinkFile, s);
-         GetLinkInfo(@LinkInfo);
-         If StrLen (LinkInfo.Description) > 0 then
-         //LPrgSel.Caption:= LinkInfo.Description else LPrgSel.Caption:= ListeFichiers.GetItem(Item.index).Name;
-         LPrgSel.Caption:= ListeFichiers.GetItem(Item.index).Description;
-         IconIndex:= 0;
-         if StrLen(LinkInfo.FullPathAndNameOfFileContiningIcon) > 0
-           then s1:= LinkInfo.FullPathAndNameOfFileContiningIcon
-           else s1:= LinkInfo.FullPathAndNameOfFileToExecute;
-         if length(s1) > 0 then
-         begin
-           // in case of x64
-           if FileExists(s1) then s:=  s1 else
-             s:= StringReplace(s1, 'Program Files (x86)', 'Program Files', [rfIgnoreCase]);
-           IconIndex:= LinkInfo.IconIndex
-         end;
-         MyIcon.Handle:= ExtractIcon (handle, PChar(s), IconIndex);
-         ImgPrgSel.Picture.Icon:= MyIcon;
-         //Fproperty.Image1.Picture.Icon:= MyIcon;
-       except
-       end;
-       Myicon.Free;    }
      except
      end;
    //
@@ -1787,16 +1661,13 @@ begin
   begin
     Caption:= Title;
     Image1.Picture.Icon:= Application.Icon;
-    //cfgFile.ReadSection(AlertStr, MAlert.Lines);
     MAlert.Text:= StringReplace(AlertStr, '%s', stReplace, [rfIgnoreCase, rfReplaceAll]);
-    //MAlert.Text:= AlertStr+' '+StReplace;
     CBNoShowAlert.Caption:= NoShow;
     CBNoShowAlert.Checked:= Alert;
     if not Alert then
    if  ShowModal = mrOK then result:= True;
     Alert:= CBNoShowAlert.Checked;
   end;
- // FPrefs.CBNoChkNewVer.Checked:= NoChkNewVer;
 end;
 
 procedure TFPrgMgr.ChkVersion;
@@ -1839,7 +1710,6 @@ begin
         ModLangue;
       end;
       StartWin:= CBStartWin.Checked;
-      //StartMini:= CBStartMini.Checked;
       SavSizePos:= CBSavSizePos.Checked;
       NoChkNewVer:= CBNoChkNewVer.Checked;
       MiniInTray:= CBMiniInTray.Checked;
@@ -1949,7 +1819,6 @@ begin
   begin
     LV1.Clear;
     IL1.Clear;
-    //BtnNew.Enabled:= False;
     BtnOK.Enabled:= False;
     BtnDelete.Enabled:= False;
   i := FindFirst(PrgMgrAppsData + '*.xml', faAnyFile, SearchRec);
@@ -2046,7 +1915,6 @@ begin
   begin
     w:= FloadConf.Width;
     LB2.Clear;
-    //If FileExists(ConfigFile) then LB2.Items.Add(ExtractFileName(ConfigFile));
     s:= ExtractFileExt(ConfigFile);
     FilNamWoExt:= Copy (ConfigFile, 1, length(ConfigFile)-length(s));
 
@@ -2057,7 +1925,6 @@ begin
      begin
        FileList [i,0]:= ExtractFileName(s);
        FileList [i,1]:= DateTimeToStr(FileGetDateTime (FilNamWoExt+'.bk'+IntToStr(i), 2));
-       //LB2.Items.Add(ExtractFileName(s)+' - '+ DateTimeToStr(FileGetDateTime (FilNamWoExt+'.bk'+IntToStr(i), 2)));
        LB2.Items.Add(FileList [i,0]+' - '+FileList [i,1]);
      end;
      if LB2.Canvas.TextWidth(s) > LB2.ClientWidth then FloadConf.Width:= w+LB2.Canvas.TextWidth(s)- LB2.ClientWidth+6 ;
@@ -2072,11 +1939,6 @@ begin
     end;
   end;
 
-end;
-
-procedure TFPrgMgr.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
-begin
- //SaveConfig(GroupName, StateChanged);
 end;
 
 procedure TFPrgMgr.SBQuitClick(Sender: TObject);
@@ -2155,7 +2017,6 @@ begin
     PMnuHideBars.Caption:= SMnuShowBars;
     Height:= ShowBarsHeight-BarsHeight;
   end;
-  //FormResize(self);
 end;
 
 procedure TFPrgMgr.PMnuGroupClick(Sender: TObject);
@@ -2206,21 +2067,15 @@ begin
   BorderWidths:= Width-ClientWidth;
   if HideBars then begin
      ShowBarsHeight:= Height+BarsHeight;
-     //FMinHeight:= GetSystemMetrics(SM_CYCAPTION)+142;
-     FminWidth:= 250;
+      FminWidth:= 250;
      HideBarsHeight:= Height;
   end else
   begin
      HideBarsHeight:= Height-BarsHeight;
-     //FMinHeight:= BarsHeight+GetSystemMetrics(SM_CYCAPTION)+142;
-     //ShowMessage (IntToStr(Height));
      FMinWidth := SBQuit.Left+SBQuit.Width+10+CBDisplay.Width+10+CBSort.Width+BorderWidths;
       if (Width < FMinWidth) then Width:= FMinWidth;
      ShowBarsHeight:= Height;
   end;
-
- // If (Height < FMinHeight) then Height:= FminHeight;
-  
 end;
 
 procedure TFPrgMgr.PMnuAddFileClick(Sender: TObject);
@@ -2228,13 +2083,13 @@ begin
   SBAddFileClick(self);
 end;
 
-procedure TFPrgMgr.Timer2Timer(Sender: TObject);
+// Explorer restarted, need to re-create trayIcon
+
+procedure TFPrgMgr.TrayProgmanCreateTaskBar(Sender: TObject);
 begin
- // Beep;
- //TrayProgman.Active:= False;
- // TrayProgman.Active:= True;
-  //Timer2.Enabled:= False;
-  //TrayProgman.Active:= True;
+  //ReadTrayIconProps(TrayProps);
+  //Application.ProcessMessages;
+  //CreateTrayIcon(TrayProps);
 end;
 
 end.

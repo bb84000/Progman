@@ -103,10 +103,15 @@ Version 0.6.7.0 - 16/03/2019
 Restauration de l'icone dans la zone de notification lors d'un redémarrage du shell
 
 Version 0.6.7.1 - 20/03/2019
-Light change to assure list change saved at program close
+Modification pour s'assurer que la modification de la liste est sauvegardée à la
+fermeture du programme
 
 Version 0.6.7.2 - 21/03/2019
-Changed trayicon process when explorer crashes
+Modification du processus de restauration de l'icone dans la zone de notification
+qued lexplorer redémarre
+
+Version 0.6.7.3 - 23/03/2019
+Ajout d'une infobulle sur l'icone dans la zone de notification
 
 
 

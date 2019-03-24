@@ -16,7 +16,6 @@ object FPrgMgr: TFPrgMgr
   Position = poDesktopCenter
   OnActivate = FormActivate
   OnClose = FormClose
-  OnCloseQuery = FormCloseQuery
   OnConstrainedResize = FormConstrainedResize
   OnCreate = FormCreate
   OnResize = FormResize
@@ -963,10 +962,11 @@ object FPrgMgr: TFPrgMgr
   end
   object TrayProgman: TJvTrayIconN
     IconIndex = 0
+    Hint = 'Tooltip'
     PopupMenu = TrayMenu
     Visibility = [tvVisibleTaskBar, tvVisibleTaskList, tvAutoHide, tvRestoreDbClick]
     OnMinimizeToTray = TrayProgmanMinimizeToTray
-    Left = 422
+    Left = 423
     Top = 140
   end
   object TrayMenu: TPopupMenu
