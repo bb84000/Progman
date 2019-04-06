@@ -1,12 +1,5 @@
-Program group manager for Windows
+Program group manager for Windows (old version)
 
-You have too many shortcuts on Windows 10 desktop ?
-Program group manager is for you.
+It is no longer developed. It is replaced with a new version at
 
-Each instance of Program Group Manager is a small "sub-desktop" 
-which can contain several applications you can runb exactly as if they
-were on the desktop. Each "sub-desktop" has its own shortcut, so you can 
-reduce drastically the number of shortcut on your desktop.
-
-Program Group Manager mimics the old Program Manager which was present in Windows 3.1 
-several decades ago.
+https://github.com/bb84000/ProgramGrpMgr
